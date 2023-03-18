@@ -8,6 +8,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
 using WebAPIDemo.Models;
+using Newtonsoft.Json;
 
 namespace WebAPIDemo.Controllers
 {
@@ -16,9 +17,33 @@ namespace WebAPIDemo.Controllers
         SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["webapi_conn"].ConnectionString);
         Employee emp = new Employee();
         // GET api/values
-        public IEnumerable<string> Get()
+        public List<Employee> Get()
         {
-            return new string[] { "value1", "value2" };
+            SqlDataAdapter adapter = new SqlDataAdapter("AA_GetEmployee", con);
+            DataTable dt = new DataTable();
+            adapter.Fill(dt);
+            List<Employee> listEmployee = new List<Employee>();
+            if (dt.Rows.Count > 0)
+            {
+                for (int i = 0; i< dt.Rows.Count; i++)
+                {
+                    Employee emp = new Employee();
+                    emp.Id = dt.Rows[i]["Id"].ToString();
+                    emp.Name = dt.Rows[i]["Name"].ToString();
+                    emp.Address = dt.Rows[i]["Address"].ToString();
+                    emp.Center = dt.Rows[i]["Center"].ToString();
+                    emp.Type = Convert.ToInt16(dt.Rows[i]["Type"]);
+                    listEmployee.Add(emp);
+                }
+                if (listEmployee.Count > 0)
+                {
+                    return listEmployee;
+                }
+                else 
+                { 
+                    return null;
+                }
+            }
         }
 
         // GET api/values/5
