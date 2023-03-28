@@ -487,40 +487,5 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:WebAPIDemo.Controllers.ValuesController.Get">
-            <summary>
-            Lấy toàn bộ thông tin nhân viên
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:WebAPIDemo.Controllers.ValuesController.Get(System.String)">
-            <summary>
-            Lấy thông tin nhân viên theo ID
-            </summary>
-            <param name="id"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WebAPIDemo.Controllers.ValuesController.Post(WebAPIDemo.Models.Employee)">
-            <summary>
-            Thêm nhân viên mới
-            </summary>
-            <param name="employee"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WebAPIDemo.Controllers.ValuesController.Put(System.String,WebAPIDemo.Models.Employee)">
-            <summary>
-            Cập nhật thông tin nhân viên
-            </summary>
-            <param name="id"></param>
-            <param name="employee"></param>
-            <returns></returns>
-        </member>
-        <member name="M:WebAPIDemo.Controllers.ValuesController.Delete(System.String)">
-            <summary>
-            Xóa nhân viên
-            </summary>
-            <param name="id"></param>
-            <returns></returns>
-        </member>
     </members>
 </doc>
