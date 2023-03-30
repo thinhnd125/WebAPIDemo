@@ -18,31 +18,33 @@ namespace WebAPIDemo.Controllers
 {
     public class ValuesController : ApiController
     {
+        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["webapi_conn"].ConnectionString);
+        //Employee emp = new Employee();
         [HttpGet]
-        //public Object GetToken()
-        //{
-        //    string key = "vietstar_28032023"; //Secret key which will be used later during validation    
-        //    var issuer = "http://vietstar.com";  //normally this will be your site URL    
+        public Object GetToken()
+        {
+            string key = "vietstar_28032023"; //secret key which will be used later during validation    
+            var issuer = "http://vietstar.com";  //normally this will be your site url    
 
-        //    var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
-        //    var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            var securitykey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+            var credentials = new SigningCredentials(securitykey, SecurityAlgorithms.HmacSha256);
 
-        //    //Create a List of Claims, Keep claims name short   
-        //    var permClaims = new List<Claim>();
-        //    permClaims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-        //    permClaims.Add(new Claim("valid", "1"));
-        //    permClaims.Add(new Claim("userid", "1"));
-        //    permClaims.Add(new Claim("name", "bilal"));
+            //create a list of claims, keep claims name short   
+            var permClaims = new List<Claim>();
+            permClaims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
+            permClaims.Add(new Claim("valid", "1"));
+            permClaims.Add(new Claim("userid", "1"));
+            permClaims.Add(new Claim("name", "bilal"));
 
-        //    //Create Security Token object by giving required parameters    
-        //    var token = new JwtSecurityToken(issuer, //Issure    
-        //                    issuer,  //Audience    
-        //                    permClaims,
-        //                    expires: DateTime.Now.AddDays(1),
-        //                    signingCredentials: credentials);
-        //    var jwt_token = new JwtSecurityTokenHandler().WriteToken(token);
-        //    return new { data = jwt_token };
-        //}
+            //create security token object by giving required parameters    
+            var token = new JwtSecurityToken(issuer, //issure    
+                            issuer,  //audience    
+                            permClaims,
+                            expires: DateTime.Now.AddDays(1),
+                            signingCredentials: credentials);
+            var jwt_token = new JwtSecurityTokenHandler().WriteToken(token);
+            return new { data = jwt_token };
+        }
 
         [HttpPost]
         public String GetName1() {
@@ -147,6 +149,28 @@ namespace WebAPIDemo.Controllers
         //        return null;
         //    }
         //}
+
+        //[Route("api/values/GetLogin")]
+        [HttpPost]
+        public string GetLogin(Login login)
+        {
+            String msg = "";
+            SqlDataAdapter adapter = new SqlDataAdapter("AA_GetLogin", con);
+            adapter.SelectCommand.CommandType = CommandType.StoredProcedure;
+            adapter.SelectCommand.Parameters.AddWithValue("@Username", login.Username);
+            adapter.SelectCommand.Parameters.AddWithValue("@Password", login.Password);
+            DataTable dt = new DataTable();
+            adapter.Fill(dt);
+            if (dt.Rows.Count > 0)
+            {
+                msg = "Logged in sucessfully";
+            }
+            else
+            {
+                msg = "Login faied";
+            }
+            return msg;
+        }
 
         //// POST api/values
         ///// <summary>

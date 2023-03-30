@@ -15,11 +15,11 @@ namespace WebAPIDemo.Controllers
     {
         SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["webapi_conn"].ConnectionString);
         Customer cus = new Customer();
-        // GET api/values
-        /// <summary>
-        /// Lấy toàn bộ thông tin khach hang
-        /// </summary>
-        /// <returns></returns>
+        //// GET api/values
+        ///// <summary>
+        ///// Lấy toàn bộ thông tin khach hang
+        ///// </summary>
+        ///// <returns></returns>
         public void GetKH()
         {
 
