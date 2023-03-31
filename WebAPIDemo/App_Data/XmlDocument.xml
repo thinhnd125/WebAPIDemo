@@ -481,11 +481,5 @@
             </summary>
             <param name="documentPath">The physical path to XML document.</param>
         </member>
-        <member name="M:WebAPIDemo.Controllers.CustomerController.GetKH">
-            <summary>
-            Lấy toàn bộ thông tin khach hang
-            </summary>
-            <returns></returns>
-        </member>
     </members>
 </doc>
