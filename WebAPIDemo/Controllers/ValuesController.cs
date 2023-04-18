@@ -32,8 +32,8 @@ namespace WebAPIDemo.Controllers
             //create a list of claims, keep claims name short   
             var permClaims = new List<Claim>();
             permClaims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-            permClaims.Add(new Claim("valid", "1"));
-            permClaims.Add(new Claim("userid", "1"));
+            permClaims.Add(new Claim("valid", "125"));
+            permClaims.Add(new Claim("userid", "123"));
             permClaims.Add(new Claim("name", "bilal"));
 
             //create security token object by giving required parameters    
@@ -71,7 +71,7 @@ namespace WebAPIDemo.Controllers
             if (identity != null)
             {
                 IEnumerable<Claim> claims = identity.Claims;
-                var name = claims.Where(p => p.Type == "name").FirstOrDefault()?.Value;
+                var name = claims.Where(p => p.Type == "userid").FirstOrDefault()?.Value;
                 return new
                 {
                     data = name
