@@ -21,13 +21,20 @@ namespace WebAPIDemo.Controllers
         SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["webapi_conn"].ConnectionString);
         //Employee emp = new Employee();
         [HttpGet]
-        public Object GetToken()
+        public Object GetToken(Login login)
         {
             string key = "vietstar_28032023"; //secret key which will be used later during validation    
             var issuer = "http://vietstar.com";  //normally this will be your site url    
 
             var securitykey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
             var credentials = new SigningCredentials(securitykey, SecurityAlgorithms.HmacSha256);
+
+            SqlDataAdapter adapter = new SqlDataAdapter("AA_GetLogin", con);
+            adapter.SelectCommand.CommandType = CommandType.StoredProcedure;
+            adapter.SelectCommand.Parameters.AddWithValue("@Username", login.Username);
+            adapter.SelectCommand.Parameters.AddWithValue("@Password", login.Password);
+            DataTable dt = new DataTable();
+            adapter.Fill(dt);
 
             //create a list of claims, keep claims name short   
             var permClaims = new List<Claim>();
