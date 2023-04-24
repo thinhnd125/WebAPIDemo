@@ -12,5 +12,6 @@ namespace WebAPIDemo.Models
         public string Address { get; set; }
         public string Center { get; set; }
         public int Type { get; set; }
+        public string Password { get; set; }
     }
 }

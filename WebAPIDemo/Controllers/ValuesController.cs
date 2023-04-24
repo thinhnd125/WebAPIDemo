@@ -35,22 +35,28 @@ namespace WebAPIDemo.Controllers
             adapter.SelectCommand.Parameters.AddWithValue("@Password", login.Password);
             DataTable dt = new DataTable();
             adapter.Fill(dt);
+            if (dt.Rows.Count > 0)
+            {
+                //create a list of claims, keep claims name short   
+                var permClaims = new List<Claim>();
+                permClaims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
+                permClaims.Add(new Claim("saoviet", "123456789"));
 
-            //create a list of claims, keep claims name short   
-            var permClaims = new List<Claim>();
-            permClaims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-            permClaims.Add(new Claim("valid", "125"));
-            permClaims.Add(new Claim("userid", "123"));
-            permClaims.Add(new Claim("name", "bilal"));
+                //create security token object by giving required parameters    
+                var token = new JwtSecurityToken(issuer, //issure    
+                                issuer,  //audience    
+                                permClaims,
+                                expires: DateTime.Now.AddDays(1),
+                                signingCredentials: credentials);
+                var jwt_token = new JwtSecurityTokenHandler().WriteToken(token);
+                return new { data = jwt_token };
+            }
+            else
+            {
+                return null;
+            }
 
-            //create security token object by giving required parameters    
-            var token = new JwtSecurityToken(issuer, //issure    
-                            issuer,  //audience    
-                            permClaims,
-                            expires: DateTime.Now.AddDays(1),
-                            signingCredentials: credentials);
-            var jwt_token = new JwtSecurityTokenHandler().WriteToken(token);
-            return new { data = jwt_token };
+            
         }
 
         [HttpPost]
@@ -125,37 +131,40 @@ namespace WebAPIDemo.Controllers
         //    }
         //}
 
-        //// GET api/values/5
-        ///// <summary>
-        ///// Lấy thông tin nhân viên theo ID
-        ///// </summary>
-        ///// <param name="id"></param>
-        ///// <returns></returns>
-        //public Employee Get(string id)
-        //{
-        //    SqlDataAdapter adapter = new SqlDataAdapter("AA_GetEmployeeById", con);
-        //    adapter.SelectCommand.CommandType = CommandType.StoredProcedure;
-        //    adapter.SelectCommand.Parameters.AddWithValue("@Id", id);
-        //    DataTable dt = new DataTable();
-        //    adapter.Fill(dt);
-        //    Employee emp = new Employee();
-        //    if (dt.Rows.Count > 0)
-        //    {
-        //        emp.Id = dt.Rows[0]["idEmployee"].ToString();
-        //        emp.Name = dt.Rows[0]["nameEmployee"].ToString();
-        //        emp.Address = dt.Rows[0]["address"].ToString();
-        //        emp.Center = dt.Rows[0]["center"].ToString();
-        //        emp.Type = Convert.ToInt16(dt.Rows[0]["otc"]);
-        //    }
-        //    if (emp != null)
-        //    {
-        //        return emp;
-        //    }
-        //    else
-        //    {
-        //        return null;
-        //    }
-        //}
+        // GET api/values/5
+        /// <summary>
+        /// Lấy thông tin nhân viên theo ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpGet]
+        public Employee Get(string id)
+        {
+            SqlDataAdapter adapter = new SqlDataAdapter("AA_GetEmployeeById", con);
+            adapter.SelectCommand.CommandType = CommandType.StoredProcedure;
+            adapter.SelectCommand.Parameters.AddWithValue("@Id", id);
+            DataTable dt = new DataTable();
+            adapter.Fill(dt);
+            Employee emp = new Employee();
+            if (dt.Rows.Count > 0)
+            {
+                emp.Id = dt.Rows[0]["idEmployee"].ToString();
+                emp.Name = dt.Rows[0]["nameEmployee"].ToString();
+                emp.Address = dt.Rows[0]["address"].ToString();
+                emp.Center = dt.Rows[0]["center"].ToString();
+                emp.Type = Convert.ToInt16(dt.Rows[0]["otc"]);
+                emp.Password = dt.Rows[0]["password"].ToString();
+            }
+            if (emp != null)
+            {
+                return emp;
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         //[Route("api/values/GetLogin")]
         [HttpPost]
