@@ -481,7 +481,7 @@
             </summary>
             <param name="documentPath">The physical path to XML document.</param>
         </member>
-        <member name="M:WebAPIDemo.Controllers.ValuesController.Get(System.String)">
+        <member name="M:WebAPIDemo.Controllers.ValuesController.GetInformationEmployee(System.String)">
             <summary>
             Lấy thông tin nhân viên theo ID
             </summary>

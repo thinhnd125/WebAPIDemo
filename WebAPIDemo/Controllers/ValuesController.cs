@@ -23,20 +23,43 @@ namespace WebAPIDemo.Controllers
         [HttpGet]
         public Object GetToken(Login login)
         {
-            string key = "vietstar_28032023"; //secret key which will be used later during validation    
-            var issuer = "http://vietstar.com";  //normally this will be your site url    
+            string RespMessage;
+            string Token;
+            List<Employee> Data = new List<Employee>();
+            string key = "vietstar_28032023"; //secret key which will be used later during validation
+            var issuer = "http://vietstar.com";  //normally this will be your site url
 
             var securitykey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
             var credentials = new SigningCredentials(securitykey, SecurityAlgorithms.HmacSha256);
 
-            SqlDataAdapter adapter = new SqlDataAdapter("AA_GetLogin", con);
-            adapter.SelectCommand.CommandType = CommandType.StoredProcedure;
-            adapter.SelectCommand.Parameters.AddWithValue("@Username", login.Username);
-            adapter.SelectCommand.Parameters.AddWithValue("@Password", login.Password);
-            DataTable dt = new DataTable();
-            adapter.Fill(dt);
-            if (dt.Rows.Count > 0)
+            SqlDataAdapter adapterLogin = new SqlDataAdapter("AA_GetLogin", con);
+            adapterLogin.SelectCommand.CommandType = CommandType.StoredProcedure;
+            adapterLogin.SelectCommand.Parameters.AddWithValue("@Username", login.Username);
+            adapterLogin.SelectCommand.Parameters.AddWithValue("@Password", login.Password);
+            DataTable loginData = new DataTable();
+            adapterLogin.Fill(loginData);
+            if (loginData.Rows.Count > 0)
             {
+                SqlDataAdapter adapterGet = new SqlDataAdapter("AA_GetEmployeeById", con);
+                adapterGet.SelectCommand.CommandType = CommandType.StoredProcedure;
+                adapterGet.SelectCommand.Parameters.AddWithValue("@Id", login.Username);
+                DataTable userData = new DataTable();
+                adapterGet.Fill(userData);
+                if (userData.Rows.Count > 0)
+                {
+                    for (int i = 0; i < userData.Rows.Count; i++)
+                    {
+                        Employee DataEmp = new Employee();
+                        DataEmp.Id = userData.Rows[i]["idEmployee"].ToString();
+                        DataEmp.Name = userData.Rows[i]["nameEmployee"].ToString();
+                        DataEmp.Address = userData.Rows[i]["address"].ToString();
+                        DataEmp.Center = userData.Rows[i]["center"].ToString();
+                        DataEmp.Type = Convert.ToInt16(userData.Rows[i]["otc"]);
+                        DataEmp.Password = userData.Rows[i]["password"].ToString();
+                        Data.Add(DataEmp);
+                    }
+                }
+
                 //create a list of claims, keep claims name short   
                 var permClaims = new List<Claim>();
                 permClaims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
@@ -49,50 +72,58 @@ namespace WebAPIDemo.Controllers
                                 expires: DateTime.Now.AddDays(1),
                                 signingCredentials: credentials);
                 var jwt_token = new JwtSecurityTokenHandler().WriteToken(token);
-                return new { data = jwt_token };
+                RespMessage = "Đăng nhập thành công";
+                Token = jwt_token;
             }
             else
             {
-                return null;
+                RespMessage = "Tên đăng nhập hoặc mật khẩu không hợp lệ";
+                Token = null;
+                Data = null;
             }
+            return new
+            {
+                RespMessage,
+                Token,
+                Data
+            };
 
-            
         }
 
-        [HttpPost]
-        public String GetName1() {
-            if (User.Identity.IsAuthenticated)
-            {
-                var identity = User.Identity as ClaimsIdentity;
-                if (identity != null)
-                {
-                    IEnumerable<Claim> claims = identity.Claims;
-                }
-                return "Valid";
-            }
-            else
-            {
-                return "Invalid";
-            }
-        }
+        //[HttpPost]
+        //public String GetName1() {
+        //    if (User.Identity.IsAuthenticated)
+        //    {
+        //        var identity = User.Identity as ClaimsIdentity;
+        //        if (identity != null)
+        //        {
+        //            IEnumerable<Claim> claims = identity.Claims;
+        //        }
+        //        return "Valid";
+        //    }
+        //    else
+        //    {
+        //        return "Invalid";
+        //    }
+        //}
 
-        [Authorize]
-        [HttpPost]
-        public Object GetName2()
-        {
-            var identity = User.Identity as ClaimsIdentity;
-            if (identity != null)
-            {
-                IEnumerable<Claim> claims = identity.Claims;
-                var name = claims.Where(p => p.Type == "userid").FirstOrDefault()?.Value;
-                return new
-                {
-                    data = name
-                };
+        //[Authorize]
+        //[HttpPost]
+        //public Object GetName2()
+        //{
+        //    var identity = User.Identity as ClaimsIdentity;
+        //    if (identity != null)
+        //    {
+        //        IEnumerable<Claim> claims = identity.Claims;
+        //        var name = claims.Where(p => p.Type == "userid").FirstOrDefault()?.Value;
+        //        return new
+        //        {
+        //            data = name
+        //        };
 
-            }
-            return null;
-        }
+        //    }
+        //    return null;
+        //}
 
         //SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["webapi_conn"].ConnectionString);
         //Employee emp = new Employee();
@@ -131,7 +162,7 @@ namespace WebAPIDemo.Controllers
         //    }
         //}
 
-        // GET api/values/5
+        // GET api/values/
         /// <summary>
         /// Lấy thông tin nhân viên theo ID
         /// </summary>
@@ -139,7 +170,7 @@ namespace WebAPIDemo.Controllers
         /// <returns></returns>
         [Authorize]
         [HttpGet]
-        public Employee Get(string id)
+        public Employee GetInformationEmployee(string id)
         {
             SqlDataAdapter adapter = new SqlDataAdapter("AA_GetEmployeeById", con);
             adapter.SelectCommand.CommandType = CommandType.StoredProcedure;
@@ -164,28 +195,6 @@ namespace WebAPIDemo.Controllers
             {
                 return null;
             }
-        }
-
-        //[Route("api/values/GetLogin")]
-        [HttpPost]
-        public string GetLogin(Login login)
-        {
-            String msg = "";
-            SqlDataAdapter adapter = new SqlDataAdapter("AA_GetLogin", con);
-            adapter.SelectCommand.CommandType = CommandType.StoredProcedure;
-            adapter.SelectCommand.Parameters.AddWithValue("@Username", login.Username);
-            adapter.SelectCommand.Parameters.AddWithValue("@Password", login.Password);
-            DataTable dt = new DataTable();
-            adapter.Fill(dt);
-            if (dt.Rows.Count > 0)
-            {
-                msg = "Logged in sucessfully";
-            }
-            else
-            {
-                msg = "Login faied";
-            }
-            return msg;
         }
 
         //// POST api/values
