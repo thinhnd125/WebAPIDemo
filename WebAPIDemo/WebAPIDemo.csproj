@@ -233,6 +233,7 @@
     <Compile Include="Models\Customer.cs" />
     <Compile Include="Models\Employee.cs" />
     <Compile Include="Models\Login.cs" />
+    <Compile Include="Models\LoginResponse.cs" />
     <Compile Include="OWINStartup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -411,7 +412,7 @@
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>copy $(SolutionDir)WebAPIDemo\bin\XmlDocument.xml E:\APIDM\App_Data\XmlDocument.xml</PostBuildEvent>
+    <PostBuildEvent>copy $(SolutionDir)WebAPIDemo\bin\XmlDocument.xml D:\LocalAPI\DemoAPI\App_Data\XmlDocument.xml</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

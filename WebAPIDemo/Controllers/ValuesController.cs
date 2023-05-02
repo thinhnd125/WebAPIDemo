@@ -13,6 +13,7 @@ using System.Security.Claims;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
+using System.Collections.ObjectModel;
 
 namespace WebAPIDemo.Controllers
 {
@@ -20,12 +21,19 @@ namespace WebAPIDemo.Controllers
     {
         SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["webapi_conn"].ConnectionString);
         //Employee emp = new Employee();
+        // GET api/values
+        /// <summary>
+        /// Đăng nhập hệ thống
+        /// </summary>
+        /// <param name="login"></param>
+        /// <returns></returns>
         [HttpGet]
-        public Object GetToken(Login login)
+        public LoginResponse GetToken(Login login)
         {
             string RespMessage;
             string Token;
-            List<Employee> Data = new List<Employee>();
+            LoginResponse respData = new LoginResponse();
+            List<Object> Data = new List<Object>();
             string key = "vietstar_28032023"; //secret key which will be used later during validation
             var issuer = "http://vietstar.com";  //normally this will be your site url
 
@@ -63,7 +71,6 @@ namespace WebAPIDemo.Controllers
                 //create a list of claims, keep claims name short   
                 var permClaims = new List<Claim>();
                 permClaims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
-                permClaims.Add(new Claim("saoviet", "123456789"));
 
                 //create security token object by giving required parameters    
                 var token = new JwtSecurityToken(issuer, //issure    
@@ -72,22 +79,17 @@ namespace WebAPIDemo.Controllers
                                 expires: DateTime.Now.AddDays(1),
                                 signingCredentials: credentials);
                 var jwt_token = new JwtSecurityTokenHandler().WriteToken(token);
-                RespMessage = "Đăng nhập thành công";
-                Token = jwt_token;
+                respData.RespMessage = "Đăng nhập thành công";
+                respData.Token = jwt_token;
+                respData.EmployeeList = Data;
             }
             else
             {
-                RespMessage = "Tên đăng nhập hoặc mật khẩu không hợp lệ";
-                Token = null;
-                Data = null;
+                respData.RespMessage = "Tên đăng nhập hoặc mật khẩu không hợp lệ";
+                respData.Token = null;
+                respData.EmployeeList = null;
             }
-            return new
-            {
-                RespMessage,
-                Token,
-                Data
-            };
-
+            return respData;
         }
 
         //[HttpPost]

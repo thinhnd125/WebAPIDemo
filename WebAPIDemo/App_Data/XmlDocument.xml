@@ -481,6 +481,13 @@
             </summary>
             <param name="documentPath">The physical path to XML document.</param>
         </member>
+        <member name="M:WebAPIDemo.Controllers.ValuesController.GetToken(WebAPIDemo.Models.Login)">
+            <summary>
+            Đăng nhập hệ thống
+            </summary>
+            <param name="login"></param>
+            <returns></returns>
+        </member>
         <member name="M:WebAPIDemo.Controllers.ValuesController.GetInformationEmployee(System.String)">
             <summary>
             Lấy thông tin nhân viên theo ID
