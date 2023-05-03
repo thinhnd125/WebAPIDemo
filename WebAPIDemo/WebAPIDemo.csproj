@@ -234,6 +234,7 @@
     <Compile Include="Models\Employee.cs" />
     <Compile Include="Models\Login.cs" />
     <Compile Include="Models\LoginResponse.cs" />
+    <Compile Include="Models\Login_GetEmployeeById.cs" />
     <Compile Include="OWINStartup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -30,8 +30,6 @@ namespace WebAPIDemo.Controllers
         [HttpGet]
         public LoginResponse GetToken(Login login)
         {
-            string RespMessage;
-            string Token;
             LoginResponse respData = new LoginResponse();
             List<Object> Data = new List<Object>();
             string key = "vietstar_28032023"; //secret key which will be used later during validation
@@ -168,15 +166,15 @@ namespace WebAPIDemo.Controllers
         /// <summary>
         /// Lấy thông tin nhân viên theo ID
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="employeeById"></param>
         /// <returns></returns>
         [Authorize]
         [HttpGet]
-        public Employee GetInformationEmployee(string id)
+        public Employee GetInformationEmployee(Login_GetEmployeeById employeeById)
         {
             SqlDataAdapter adapter = new SqlDataAdapter("AA_GetEmployeeById", con);
             adapter.SelectCommand.CommandType = CommandType.StoredProcedure;
-            adapter.SelectCommand.Parameters.AddWithValue("@Id", id);
+            adapter.SelectCommand.Parameters.AddWithValue("@Id", employeeById.Username);
             DataTable dt = new DataTable();
             adapter.Fill(dt);
             Employee emp = new Employee();

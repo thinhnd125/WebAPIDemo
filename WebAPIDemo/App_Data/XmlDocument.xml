@@ -488,11 +488,11 @@
             <param name="login"></param>
             <returns></returns>
         </member>
-        <member name="M:WebAPIDemo.Controllers.ValuesController.GetInformationEmployee(System.String)">
+        <member name="M:WebAPIDemo.Controllers.ValuesController.GetInformationEmployee(WebAPIDemo.Models.Login_GetEmployeeById)">
             <summary>
             Lấy thông tin nhân viên theo ID
             </summary>
-            <param name="id"></param>
+            <param name="employeeById"></param>
             <returns></returns>
         </member>
     </members>
